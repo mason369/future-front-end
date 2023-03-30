@@ -3,7 +3,7 @@
         <!-- 搜索框 -->
         <el-header class="main-box-right-header1">
             <!-- ChannelMessage Box 消息弹出框 -->
-            <el-button class="search-btn" text @click="dialogTableVisible = true">寻找或开始新的对话 </el-button>
+            <el-button class="search-btn" text @click="dialogTableVisible = true">寻找或开始新的对话</el-button>
             <!-- 弹出框 -->
             <el-dialog v-model="dialogTableVisible" title="Shipping address">
                 <el-table :data="gridData">
@@ -16,13 +16,13 @@
         <el-main class="main-box-right-main1">
             <el-container class="main-box-right-main1-flex">
                 <el-header class="Friends-private-message">
-                    <!-- 好友、store -->
+                    <!-- 好友、Store -->
                     <el-container class="friends-top friends-top-head">
                         <el-row
-                            :class="['friends-top-flex', $route.path === '/@me' ? 'is-active' : '']"
+                            :class="['friends-top-flex', $route.path === '/main/@me' ? 'is-active' : '']"
                             @click="
                                 () => {
-                                    $router.push('@me');
+                                    $router.push('/main/@me');
                                 }
                             "
                         >
@@ -34,10 +34,10 @@
                             </el-col>
                         </el-row>
                         <el-row
-                            :class="['friends-top-flex', $route.path === '/store' ? 'is-active' : '']"
+                            :class="['friends-top-flex', $route.path === '/main/Store' ? 'is-active' : '']"
                             @click="
                                 () => {
-                                    $router.push('/store');
+                                    $router.push('/main/Store');
                                 }
                             "
                         >
@@ -62,7 +62,7 @@
                             <div class="private-message-user-box">
                                 <div class="private-message-user-box-flex">
                                     <div class="private-message-user-box-flex-left">
-                                        <img :src="item.avatar" />
+                                        <el-avatar :src="item.avatar" />
                                         <FriendStatus :status="item.status" :statusText="item.statusText" />
                                     </div>
                                     <div class="private-message-user-box-flex-right">
@@ -84,7 +84,7 @@
                                 class="bottom-profile-avatar-img"
                             />
                             <span>
-                                <p>Mason Skywork</p>
+                                <p>鸡你太美</p>
                                 <p>#1237</p>
                             </span>
                         </el-col>
@@ -107,33 +107,34 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import AsideLPrivateService, { IAsideLPrivateResponse } from '@/api/aside';
+import { MessageBox, UserFilled } from '@element-plus/icons-vue';
 
 // 控制dialog显示
 const dialogTableVisible = ref(false);
 // 表格数据
 const gridData = [
     {
-        date   : '2016-05-02',
-        name   : 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District'
+        date: '2016-05-02',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District',
     },
     {
-        date   : '2016-05-04',
-        name   : 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District'
+        date: '2016-05-04',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District',
     },
     {
-        date   : '2016-05-01',
-        name   : 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District'
+        date: '2016-05-01',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District',
     },
     {
-        date   : '2016-05-03',
-        name   : 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District'
-    }
+        date: '2016-05-03',
+        name: 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District',
+    },
 ];
 // 私信列表
 const privateMessageList = reactive<IAsideLPrivateResponse[]>([]);
@@ -149,10 +150,10 @@ onMounted(() => {
  * @constructor
  * @description 获取私信列表
  */
-const getPrivateMessageList = async() => {
+const getPrivateMessageList = async () => {
     const { data } = await AsideLPrivateService.getAsidePrivateUserList();
     privateMessageList.push(...data.sidebarList);
-    console.log('---------getAsidePrivateUserList---------');
+    console.log('---------获取私信列表---------');
     console.log(privateMessageList);
 };
 </script>
@@ -164,14 +165,36 @@ const getPrivateMessageList = async() => {
         justify-content: space-between;
 
         .Friends-private-message {
-            height: 300px;
-            margin-top: 10px;
+            height: 90%;
             background-color: unset;
-            padding: 0 8px !important;
+            padding: 0px 8px !important;
 
             .friends-top-head {
+                //固定头部
+                position: sticky;
+                padding-top: 10px;
+                top: 0px;
+                background-color: #2b2d31;
+                z-index: 99;
+
                 .friends-top-flex {
                     height: 80px;
+                }
+
+                .is-active {
+                    background-color: #404249;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                    .el-col {
+                        .el-icon {
+                            color: #f2f3f5 !important;
+                        }
+
+                        span {
+                            color: #f2f3f5 !important;
+                        }
+                    }
                 }
             }
 
@@ -180,9 +203,27 @@ const getPrivateMessageList = async() => {
                 height: 80px;
                 display: flex;
                 flex-direction: column;
+                //超出视口滚动条
+                overflow-y: auto;
+                //    美化滚动条
+                &::-webkit-scrollbar {
+                    width: 2px;
+                    height: 2px;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background-color: #3f4147;
+                    border-radius: 4px;
+                }
+
+                &::-webkit-scrollbar-track {
+                    background-color: #313338;
+                    border-radius: 4px;
+                }
+
                 //第二个元素高度
                 &:nth-child(2) {
-                    height: 110px;
+                    height: 610px;
 
                     .friends-top-title {
                         height: 30px;
@@ -193,6 +234,12 @@ const getPrivateMessageList = async() => {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+
+                        //固定位置不动
+                        position: sticky;
+                        top: 0px;
+                        background-color: #2b2d31;
+                        z-index: 99;
 
                         &:hover {
                             span {
@@ -244,6 +291,7 @@ const getPrivateMessageList = async() => {
                                 .private-message-user-box-flex-right-top {
                                     span {
                                         color: #dbdee1 !important;
+                                        width: 100px;
                                     }
                                 }
                             }
@@ -307,8 +355,8 @@ const getPrivateMessageList = async() => {
                                 //登录状态定位
                                 :deep(.friendStatus) {
                                     position: absolute;
-                                    left: 31.5px;
-                                    top: 32px;
+                                    left: 34.8px;
+                                    top: 35.5px;
                                 }
                             }
 
@@ -320,6 +368,13 @@ const getPrivateMessageList = async() => {
 
                                     span {
                                         color: #949ba4;
+                                        width: 150px;
+                                        text-align: left;
+                                        margin-left: 18px;
+                                        //超出部分显示省略号
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        white-space: nowrap;
                                         &:first-child {
                                             font-size: 15.5px;
                                             font-weight: inherit;
@@ -347,6 +402,10 @@ const getPrivateMessageList = async() => {
                 height: 100%;
                 display: flex;
                 align-items: center;
+                //固定位置不动
+                position: sticky;
+                bottom: 0;
+                z-index: 99;
 
                 .bottom-profile-avatar {
                     height: 40px;
@@ -414,6 +473,9 @@ const getPrivateMessageList = async() => {
     justify-content: center;
     align-items: center;
     padding: 0 8px !important;
+    //固定位置
+    position: static;
+    top: 0;
 
     .search-btn {
         width: 100%;
@@ -464,9 +526,8 @@ const getPrivateMessageList = async() => {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-    }
-
-    &.main-box-right-main2 {
+        //    超出隐藏
+        //overflow-y: hidden;
     }
 }
 

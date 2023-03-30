@@ -13,8 +13,8 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
     // 如果路径为/#/main或/#/message,则跳转到/#/main/message
-    if (to.path === '/main' || to.path === '/message') {
-        next('/main/message');
+    if (to.path === '/main') {
+        next('/main/@me');
     } else {
         next();
     }

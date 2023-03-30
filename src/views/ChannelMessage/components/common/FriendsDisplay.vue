@@ -21,10 +21,9 @@
                     {{ item.name }}
                     <p>#{{ item.id }}</p>
                 </div>
-                <div v-if="item.status === 'online'" class="friends-status">在线</div>
-                <div v-else-if="item.status === 'offline'" class="friends-status">离线</div>
-                <div v-else-if="item.status === 'busy'" class="friends-status">忙碌</div>
-                <div v-else-if="item.status === 'idle'" class="friends-status">闲置</div>
+                <div :class="[statusMap[item.status], 'friends-status']">
+                    {{ statusMap[item.status] }}
+                </div>
                 <FriendStatus :status="item.status" />
             </div>
         </div>
@@ -46,29 +45,40 @@
 
 <script setup lang="ts">
 import { defineComponent, defineProps, ref } from 'vue';
-import { IUserFriendsResponse } from '@/api/friends';
 
 defineComponent({
-    name: 'FriendsDisplay'
+    name: 'FriendsDisplay',
 });
 defineProps({
     status: {
-        type   : String,
-        default: 'online'
+        type: String,
+        default: 'online',
     },
     list: {
-        type   : Array as () => Array<IUserFriendsResponse>,
-        default: () => []
+        type: Array as () => Array<any>,
+        default: () => [],
     },
     iconLeft: {
-        type   : String,
-        default: ''
+        type: String,
+        default: '',
     },
     iconRight: {
-        type   : String,
-        default: ''
-    }
+        type: String,
+        default: '',
+    },
 });
+
+interface StatusMap {
+    [key: string]: string;
+}
+
+// statusMap
+const statusMap: StatusMap = {
+    online: '在线',
+    offline: '离线',
+    busy: '忙碌',
+    away: '离开',
+};
 const searchFriend = () => {
     console.log(search);
 };

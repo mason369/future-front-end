@@ -2,15 +2,20 @@
  * @description 封装的axios实例，可用于发起http请求
  * @exports service - axios实例
  */
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import type { Response } from './types';
-// import { Toast } from 'vant';
-import { ElMessage } from 'element-plus';
-import router from '@/router';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import type { Response } from "./types";
+import { ElMessage } from "element-plus";
+import {
+    TokenExpiredErrorHandler,
+    NoPermissionErrorHandler,
+    DefaultErrorHandler,
+    ErrorHandler
+} from "./errors";
+
 // 重设axiosbaseURL
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL;
 axios.defaults.timeout = 1000 * 10;
-axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8';
+axios.defaults.headers["Content-Type"] = "application/json;charset=UTF-8";
 
 /**
  * @description 创建axios实例
@@ -18,7 +23,7 @@ axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8';
 const service = axios.create({
     // 根据不同env设置不同的baseURL
     baseURL          : import.meta.env.VITE_APP_API_BASE_URL,
-    responseType     : 'json',
+    responseType     : "json",
     transformResponse: [
         function(data) {
             try {
@@ -49,61 +54,6 @@ service.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
-/**
- *@description 错误处理器(ErrorHandler)接口
- * @interface ErrorHandler
- */
-interface ErrorHandler {
-    handle(response: AxiosResponse<Response>): void;
-}
-
-/**
- * @description Token 过期错误处理器
- * @class TokenExpiredErrorHandler
- * @implements {ErrorHandler} 错误处理器接口
- * @param {AxiosResponse<Response>} response - 响应数据
- * @returns {void}
- * @memberof TokenExpiredErrorHandler
- */
-class TokenExpiredErrorHandler implements ErrorHandler {
-    handle(response: AxiosResponse<Response>) {
-        const errMessage = 'Token expired';
-        // 跳转至登录页
-        // router.push('/login').then((r) => r);
-        // 显示错误提示信息
-        ElMessage.error(errMessage);
-    }
-}
-
-/**
- * @description 无权限错误处理器
- * @class NoPermissionErrorHandler
- * @implements {ErrorHandler} 错误处理器接口
- * @param {AxiosResponse<Response>} response - 响应数据
- * @returns {void}
- */
-class NoPermissionErrorHandler implements ErrorHandler {
-    handle(response: AxiosResponse<Response>) {
-        const errMessage = 'No permission';
-        // 显示错误提示信息
-        ElMessage.error(errMessage);
-    }
-}
-
-/**
- * @description 默认错误处理器
- * @class DefaultErrorHandler
- * @implements {ErrorHandler} 错误处理器接口
- * @param {AxiosResponse<Response>} response - 响应数据
- * @returns {void}
- */
-class DefaultErrorHandler implements ErrorHandler {
-    handle(response: AxiosResponse<Response>) {
-        const { message } = response.data;
-        if (message) ElMessage.error(message);
-    }
-}
 
 /**
  * @description 错误处理器映射表
