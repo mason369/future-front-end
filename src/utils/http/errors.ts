@@ -1,13 +1,13 @@
-import { AxiosResponse } from "axios";
-import { Response } from "@/utils/http/types";
-import { ElMessage } from "element-plus";
+import { AxiosResponse } from 'axios';
+import { Response } from '@/utils/http/types';
+import { ElMessage } from 'element-plus';
 
 /**
  *@description 错误处理器(ErrorHandler)接口
  * @interface ErrorHandler
  */
 export interface ErrorHandler {
-	handle(response: AxiosResponse<Response>): void;
+    handle(response: AxiosResponse<Response>): void;
 }
 
 /**
@@ -20,7 +20,7 @@ export interface ErrorHandler {
  */
 export class TokenExpiredErrorHandler implements ErrorHandler {
     handle(response: AxiosResponse<Response>) {
-        const errMessage = "Token expired";
+        const errMessage = 'Token expired';
         // 跳转至登录页
         // router.push('/login').then((r) => r);
         // 显示错误提示信息
@@ -37,7 +37,7 @@ export class TokenExpiredErrorHandler implements ErrorHandler {
  */
 export class NoPermissionErrorHandler implements ErrorHandler {
     handle(response: AxiosResponse<Response>) {
-        const errMessage = "No permission";
+        const errMessage = 'No permission';
         // 显示错误提示信息
         ElMessage.error(errMessage);
     }
