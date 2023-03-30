@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mason369/future-front-end/compare/v1.0.1...v1.1.0) (2023-03-30)
+
+
+### Features
+
+* refactor ([57b4ef1](https://github.com/mason369/future-front-end/commit/57b4ef14bfcd3560222e4bdbfa2539a8df9fa452))
+
 ## [1.0.1](https://github.com/mason369/future-front-end/compare/v1.0.0...v1.0.1) (2023-03-30)
 
 
