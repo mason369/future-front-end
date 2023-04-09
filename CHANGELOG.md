@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/mason369/future-front-end/compare/v1.1.0...v1.1.1) (2023-04-09)
+
+
+### update
+
+* 更新异常捕获 ([3fe2af4](https://github.com/mason369/future-front-end/commit/3fe2af487d32dc15e510f793fcc0817b08cf68d9))
+
 ## [1.1.0](https://github.com/mason369/future-front-end/compare/v1.0.1...v1.1.0) (2023-03-30)
 
 ### Features
