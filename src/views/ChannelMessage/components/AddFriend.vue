@@ -42,16 +42,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
-import UserFriendsService, { IUserInfoResponse } from "@/api/friends";
-import { asyncTryCatch } from "@/utils/exceptionHandling";
+import { onMounted, reactive, ref, watch } from 'vue';
+import UserFriendsService, { IUserInfoResponse } from '@/api/friends';
+import { asyncTryCatch } from '@/utils/exceptionHandling';
 
 // 输入框的引用
 const inputRef = ref<HTMLInputElement | null>(null);
 // 是否禁用搜索按钮
 const isInput = ref<boolean>(false);
 // 输入框的值
-const input = ref<string>("");
+const input = ref<string>('');
 // popover 可见性
 const popoverVisible = ref<boolean>(false);
 // 是否为数字
@@ -59,16 +59,16 @@ const isNumber = ref<boolean>(false);
 // 用户信息对象
 const friendsInfo = reactive<IUserInfoResponse>({
     mapKey: {
-        id           : "",
-        username     : "",
-        email        : "",
-        discriminator: "",
-        password     : "",
-        createdAt    : "",
-        updatedAt    : "",
-        role         : "",
-        img          : ""
-    }
+        id: '',
+        username: '',
+        email: '',
+        discriminator: '',
+        password: '',
+        createdAt: '',
+        updatedAt: '',
+        role: '',
+        img: '',
+    },
 });
 
 /**
@@ -90,13 +90,13 @@ watch(
         isInput.value = !newVal;
         isNumber.value = reg.test(newVal);
     },
-    { immediate: true }
+    { immediate: true },
 );
 
 /**
  * @description 搜索好友
  */
-const searchFriend = asyncTryCatch(async() => {
+const searchFriend = asyncTryCatch(async () => {
     if (/^\d+$/.test(input.value)) {
         const { data, code } = await UserFriendsService.getUserInfo(input.value);
         if (code === 200) {
@@ -110,7 +110,7 @@ const searchFriend = asyncTryCatch(async() => {
             friendsInfo.mapKey.role = data.mapKey.role;
             friendsInfo.mapKey.img = data.mapKey.img;
         } else {
-            throw new Error("请求数据失败");
+            throw new Error('请求数据失败');
         }
     } else {
         popoverVisible.value = true;
@@ -122,7 +122,7 @@ const searchFriend = asyncTryCatch(async() => {
 .add-friend {
     width: 100%;
     padding: 20px 15px 30px 15px;
-    
+
     h2 {
         text-align: left;
         margin-bottom: 8px;
@@ -132,7 +132,7 @@ const searchFriend = asyncTryCatch(async() => {
         line-height: 20px;
         text-transform: uppercase;
     }
-    
+
     p {
         text-align: left;
         color: #b5bac1;
@@ -141,13 +141,13 @@ const searchFriend = asyncTryCatch(async() => {
         line-height: 20px;
         font-weight: 400;
     }
-    
+
     .search {
         display: flex;
-        
+
         .search-input {
             flex: 1;
-            
+
             input {
                 width: 96%;
                 height: 48px;
@@ -158,25 +158,25 @@ const searchFriend = asyncTryCatch(async() => {
                 font-size: 14px;
                 line-height: 20px;
                 font-weight: 400;
-                
+
                 &::placeholder {
                     color: #4e5058;
                 }
-                
+
                 //    获取焦点后边框颜色变为00A8FC
                 &:focus {
                     border: 1px solid #00a8fc;
                 }
             }
         }
-        
+
         .search-btn {
             width: 110px;
             margin-left: 10px;
             display: inline-block;
             position: relative;
             right: 132px;
-            
+
             button {
                 width: 100%;
                 border-radius: 4px;
@@ -194,12 +194,12 @@ const searchFriend = asyncTryCatch(async() => {
                         background-color: #3b428a;
                     }
                 }
-                
+
                 //如果按钮启用了，hover颜色为4752C4
                 &:hover {
                     background-color: #4752c4;
                 }
-                
+
                 //缓动效果
                 transition: all 0.25s;
             }
@@ -212,7 +212,7 @@ const searchFriend = asyncTryCatch(async() => {
     width: 100%;
     height: 100%;
     border-top: 1px solid #3f4147;
-    
+
     .empty-box {
         //    居中
         display: flex;
