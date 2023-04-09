@@ -1,6 +1,6 @@
-<!--如果数组为空则显示空白组件，如果不为空则显示好友列表-->
 <template>
-    <div class="search-box-header-top">
+    <!-- 顶部搜索 -->
+    <div class="search-box-header-top" style="width: 770px">
         <div class="search-box">
             <el-input
                 class="search-box-input"
@@ -10,89 +10,79 @@
             ></el-input>
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
-        <h2 class="title-x4dI75 container-q97qHp">好友总数 — {{ list.length }}</h2>
+        <h2 class="title-x4dI75 container-q97qHp">{{ titleText }} — {{ list.length }}</h2>
     </div>
-    <div class="placeholder"></div>
-    <div class="friends-list" v-for="(item, index) in list" :key="index">
-        <div class="friends-avatar">
-            <el-avatar class="avatar" :src="item.avatar"></el-avatar>
-            <div class="friends-info">
-                <div class="friends-name">
-                    {{ item.name }}
-                    <p>#{{ item.id }}</p>
-                </div>
-                <div :class="[statusMap[item.status], 'friends-status']">
-                    {{ statusMap[item.status] }}
-                </div>
-                <FriendStatus :status="item.status" />
-            </div>
+    <div class="placeholder" v-if="list.length === 0"></div>
+    <template v-else>
+        <div class="friends-list" v-for="(item, index) in list" :key="index" style="width: 755px">
+            <!-- 好友列表 -->
+            <Friend
+                :item="item"
+                :statusMap="statusMap"
+                :isInitiativeMap="isInitiativeMap"
+                :icon-left="iconLeft"
+                :icon-right="iconRight"
+                :status="status"
+            ></Friend>
         </div>
-        <!-- 图标 -->
-        <div class="friends-more" v-if="iconLeft || iconRight">
-            <el-tooltip :enterable="false" class="box-item" effect="dark" content="消息" placement="top">
-                <span v-if="iconLeft">
-                    <i :class="iconLeft"></i>
-                </span>
-            </el-tooltip>
-            <el-tooltip :enterable="false" class="box-item" effect="dark" content="更多" placement="top">
-                <span v-if="iconRight">
-                    <i :class="iconRight"></i>
-                </span>
-            </el-tooltip>
-        </div>
-    </div>
+    </template>
 </template>
 
 <script setup lang="ts">
 import { defineComponent, defineProps, ref } from 'vue';
+import Friend from './FriendList.vue';
 
 defineComponent({
-    name: 'FriendsDisplay',
+    name      : 'FriendsDisplay',
+    components: {
+        Friend
+    }
 });
+
 defineProps({
+    titleText: {
+        type   : String,
+        default: ''
+    },
     status: {
-        type: String,
-        default: 'online',
+        type   : String,
+        default: 'online'
     },
     list: {
-        type: Array as () => Array<any>,
-        default: () => [],
+        type   : Array as () => Array<any>,
+        default: () => []
     },
     iconLeft: {
-        type: String,
-        default: '',
+        type   : String,
+        default: ''
     },
     iconRight: {
-        type: String,
-        default: '',
-    },
+        type   : String,
+        default: ''
+    }
 });
 
-interface StatusMap {
-    [key: string]: string;
-}
-
-// statusMap
-const statusMap: StatusMap = {
-    online: '在线',
-    offline: '离线',
-    busy: '忙碌',
-    away: '离开',
-};
-const searchFriend = () => {
-    console.log(search);
-};
 const search = ref('');
+/**
+ @description: 用于存储不同状态下的文字信息
+ */ const statusMap = { online: '在线', offline: '离线', busy: '忙碌', away: '离开' };
+/**
+ @description: 用于存储待定好友的文字信息
+ */ const isInitiativeMap = { true: '送出的好友请求', false: '收到好友请求' };
+
+const searchFriend = () => {
+    console.log(search.value);
+};
 </script>
 
 <style lang="scss" scoped>
 .search-box-header-top {
     padding-top: 15px;
-    height: 50px;
+    height: 90px;
     width: 100%;
     //固定至顶部
     position: sticky;
-    top: 0px;
+    top: 0;
     //    使其不会被遮挡
     z-index: 999;
     background-color: #313338;
@@ -110,9 +100,11 @@ const search = ref('');
     align-items: center;
     width: 100%;
     padding: 12px 0;
-    margin: 0px 8px 0px 8px;
+    margin: 0 8px 0 8px;
     border-top: 1px solid #3f4147;
-
+    &:first-child {
+        margin-top: 40px;
+    }
     &:hover {
         background-color: #393c41;
         cursor: pointer;
@@ -185,7 +177,7 @@ const search = ref('');
     .friends-more {
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: flex-end;
         width: 100px;
 
         span {
@@ -252,7 +244,7 @@ const search = ref('');
 
     .fa-magnifying-glass {
         position: absolute;
-        top: 50%;
+        top: 32%;
         right: 10px;
         transform: translateY(-50%);
         font-size: 18px;
@@ -268,5 +260,17 @@ const search = ref('');
 
 :deep(.is-focus) {
     box-shadow: unset;
+}
+
+.deleteFriends {
+    .span-hover1:hover {
+        color: #f23f42;
+    }
+}
+
+.addFriends {
+    .span-hover2:hover {
+        color: #23a559;
+    }
 }
 </style>

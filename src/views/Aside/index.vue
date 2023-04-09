@@ -9,13 +9,27 @@
             :class="{ 'is-active': pathClass }"
         >
             <el-menu-item index="/main/@me" id="rePathClass">
-                <el-tooltip class="box-item" effect="dark" content="私信" placement="right" :enterable="false">
+                <el-tooltip
+                    raw-content
+                    :hide-after="50"
+                    class="box-item"
+                    effect="dark"
+                    content="私信"
+                    placement="right"
+                    :enterable="false"
+                >
                     <img
                         class="channel-img"
                         src="https://cdn.discordapp.com/icons/464395429392678912/401026c51da58472a16c650ee263701d.webp?size=160"
                         alt=""
                     />
                 </el-tooltip>
+                <el-badge
+                    :max="99"
+                    :value="privateLetterStore.getPrivateLetterCount.length"
+                    class="item-message"
+                    v-if="privateLetterStore.getPrivateLetterCount.length > 0"
+                />
             </el-menu-item>
             <div class="listItem-3SmSlK">
                 <div class="guildSeparator-a4uisj"></div>
@@ -33,14 +47,28 @@
                     <span>{{ item.name }}</span>
                 </template>
             </el-menu-item>
-            <el-tooltip class="box-item" effect="dark" content="创建组" placement="right" :enterable="false">
+            <el-tooltip
+                :hide-after="50"
+                class="box-item"
+                effect="dark"
+                content="创建组"
+                placement="right"
+                :enterable="false"
+            >
                 <el-menu-item index="1" class="add-icon">
                     <el-icon>
                         <Plus class="icon" />
                     </el-icon>
                 </el-menu-item>
             </el-tooltip>
-            <el-tooltip class="box-item" effect="dark" content="探索公共组" placement="right" :enterable="false">
+            <el-tooltip
+                :hide-after="50"
+                class="box-item"
+                effect="dark"
+                content="探索公共组"
+                placement="right"
+                :enterable="false"
+            >
                 <el-menu-item index="2" class="add-icon">
                     <el-icon>
                         <Compass class="icon" />
@@ -50,7 +78,14 @@
             <div class="listItem-3SmSlK">
                 <div class="guildSeparator-a4uisj"></div>
             </div>
-            <el-tooltip class="box-item" effect="dark" content="下载App" placement="right" :enterable="false">
+            <el-tooltip
+                :hide-after="50"
+                class="box-item"
+                effect="dark"
+                content="下载App"
+                placement="right"
+                :enterable="false"
+            >
                 <el-menu-item index="3" class="add-icon">
                     <el-icon>
                         <Download class="icon" />
@@ -66,7 +101,10 @@ import { onMounted, reactive, ref } from 'vue';
 import AsideLPrivateService, { IAsideSidebarList } from '@/api/aside';
 import { useRouter } from 'vue-router';
 import { Compass, Download, Plus } from '@element-plus/icons-vue';
+import { usePrivateLetterStore } from '@/store';
+import { asyncTryCatch } from '@/utils/exceptionHandling';
 
+const privateLetterStore = usePrivateLetterStore();
 const errorHandler = () => true;
 const isCollapse = ref(true);
 const router = useRouter();
@@ -96,13 +134,12 @@ const goToChannel = (item: IAsideSidebarList) => {
  * @function
  * @returns {Promise<void>}
  */
-const getChannelList = async () => {
+const getChannelList = asyncTryCatch(async() => {
     const res = await AsideLPrivateService.getAsideSidebarList();
     asideSidebarList.push(...(res.data as any));
     console.log('-------侧边栏频道列表数据---------');
     console.log(asideSidebarList);
-};
-
+});
 /**
  * 根据rePathClass 的id删除is-active类名
  * @function removeClass

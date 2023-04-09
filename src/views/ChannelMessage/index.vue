@@ -31,6 +31,9 @@
                                     <UserFilled />
                                 </el-icon>
                                 <span>好友</span>
+                                <i class="msgNum" v-if="userFriends.handlePendingFriendsRequestList.length">{{
+                                    userFriends.handlePendingFriendsRequestList.length
+                                }}</i>
                             </el-col>
                         </el-row>
                         <el-row
@@ -53,7 +56,13 @@
                     <el-container class="friends-top">
                         <el-row class="friends-top-title">
                             <span>私信</span>
-                            <el-tooltip class="box-item" effect="dark" content="创建私信" placement="top">
+                            <el-tooltip
+                                :hide-after="50"
+                                class="box-item"
+                                effect="dark"
+                                content="创建私信"
+                                placement="top"
+                            >
                                 <span>+</span>
                             </el-tooltip>
                         </el-row>
@@ -89,13 +98,25 @@
                             </span>
                         </el-col>
                         <el-col :span="12" class="bottom-profile-avatar">
-                            <el-tooltip class="box-item" effect="dark" content="取消静音" placement="top">
+                            <el-tooltip
+                                :hide-after="50"
+                                class="box-item"
+                                effect="dark"
+                                content="取消静音"
+                                placement="top"
+                            >
                                 <i class="fa-solid fa-microphone-slash"></i>
                             </el-tooltip>
-                            <el-tooltip class="box-item" effect="dark" content="耳机静音" placement="top">
+                            <el-tooltip
+                                :hide-after="50"
+                                class="box-item"
+                                effect="dark"
+                                content="耳机静音"
+                                placement="top"
+                            >
                                 <i class="fa-solid fa-headphones"></i>
                             </el-tooltip>
-                            <el-tooltip class="box-item" effect="dark" content="设置" placement="top">
+                            <el-tooltip :hide-after="50" class="box-item" effect="dark" content="设置" placement="top">
                                 <i class="fa-solid fa-gear"></i>
                             </el-tooltip>
                         </el-col>
@@ -110,31 +131,35 @@
 import { onMounted, reactive, ref } from 'vue';
 import AsideLPrivateService, { IAsideLPrivateResponse } from '@/api/aside';
 import { MessageBox, UserFilled } from '@element-plus/icons-vue';
+import { useUserFriendsStore } from '@/store';
+import { asyncTryCatch } from "@/utils/exceptionHandling";
+
+const userFriends = useUserFriendsStore();
 
 // 控制dialog显示
 const dialogTableVisible = ref(false);
 // 表格数据
 const gridData = [
     {
-        date: '2016-05-02',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
+        date   : '2016-05-02',
+        name   : 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
     },
     {
-        date: '2016-05-04',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
+        date   : '2016-05-04',
+        name   : 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
     },
     {
-        date: '2016-05-01',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
+        date   : '2016-05-01',
+        name   : 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
     },
     {
-        date: '2016-05-03',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
-    },
+        date   : '2016-05-03',
+        name   : 'John Smith',
+        address: 'No.1518,  Jinshajiang Road, Putuo District'
+    }
 ];
 // 私信列表
 const privateMessageList = reactive<IAsideLPrivateResponse[]>([]);
@@ -150,12 +175,12 @@ onMounted(() => {
  * @constructor
  * @description 获取私信列表
  */
-const getPrivateMessageList = async () => {
+const getPrivateMessageList = asyncTryCatch(async() => {
     const { data } = await AsideLPrivateService.getAsidePrivateUserList();
     privateMessageList.push(...data.sidebarList);
-    console.log('---------获取私信列表---------');
+    console.log('----------获取私信列表---------');
     console.log(privateMessageList);
-};
+});
 </script>
 
 <style lang="scss" scoped>
@@ -167,7 +192,7 @@ const getPrivateMessageList = async () => {
         .Friends-private-message {
             height: 90%;
             background-color: unset;
-            padding: 0px 8px !important;
+            padding: 0 8px !important;
 
             .friends-top-head {
                 //固定头部
@@ -552,5 +577,18 @@ const getPrivateMessageList = async () => {
             color: #dbdee1;
         }
     }
+}
+.msgNum {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #f23f42;
+    color: #fff;
+    font-size: 12px;
 }
 </style>
