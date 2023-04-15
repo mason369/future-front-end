@@ -13,7 +13,6 @@ import FriendStatus from './components/common/FriendStatus.vue';
 import FriendsDisplay from './views/ChannelMessage/components/common/FriendsDisplay.vue';
 import { useRegisterSW } from 'virtual:pwa-register/vue';
 
-
 const appx = createApp(App);
 const pinia = createPinia();
 
