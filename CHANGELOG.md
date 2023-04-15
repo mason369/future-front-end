@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/mason369/future-front-end/compare/v1.1.1...v1.1.2) (2023-04-15)
+
+
+### update
+
+* 更新路由跳转、聊天界面、修改配置、修复错误 ([8ba37a0](https://github.com/mason369/future-front-end/commit/8ba37a00a07dc8597e3f7d81ba0a0d1a6a0c9c41))
+
 ## [1.1.1](https://github.com/mason369/future-front-end/compare/v1.1.0...v1.1.1) (2023-04-09)
 
 
