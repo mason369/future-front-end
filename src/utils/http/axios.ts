@@ -5,9 +5,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Response } from './types';
 import { ElMessage } from 'element-plus';
-import { TokenExpiredErrorHandler, NoPermissionErrorHandler, DefaultErrorHandler, ErrorHandler } from './errors';
+import { DefaultErrorHandler, ErrorHandler, NoPermissionErrorHandler, TokenExpiredErrorHandler } from './errors';
 
-// 重设axiosbaseURL为当前环境的VITE_APP_API_BASE_URL
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL as string;
 axios.defaults.timeout = 1000 * 10;
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
@@ -22,7 +21,7 @@ const service = axios.create({
             try {
                 data = JSON.parse(data);
             } catch (e) {
-                console.log(e);
+                console.log('JSON parse error: ', e);
             }
             return data;
         }
@@ -52,7 +51,7 @@ service.interceptors.request.use(
  * @description 错误处理器映射表
  * @type {Record<number, ErrorHandler>}
  */
-const errorHandlers: Record<number, ErrorHandler> = {
+const errorHandlers: Record<number | string, ErrorHandler> = {
     404: new DefaultErrorHandler(),
     112: new TokenExpiredErrorHandler(),
     212: new NoPermissionErrorHandler()
@@ -65,8 +64,8 @@ const errorHandlers: Record<number, ErrorHandler> = {
  */
 const handleResponse = <T>(response: AxiosResponse<Response<T>>) => {
     const { code } = response.data;
-    if (code !== 0) {
-        const errorHandler = errorHandlers[code as number];
+    if (![0, '0', 200, '200'].includes(code)) {
+        const errorHandler = errorHandlers[code];
         errorHandler?.handle(response);
     }
     return response;
