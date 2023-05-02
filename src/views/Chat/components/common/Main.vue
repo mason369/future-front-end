@@ -2,11 +2,18 @@
     <el-main class="main-box-right-main2-main1">
         <!--聊天记录列表：头像、名称、日期、内容-->
         <div class="chat-record-list">
-            <div class="chat-record-list-item" v-for="item in messageRecord" :key="item.messageId">
+            <ChatHead :chatRecord="chatRecord" />
+
+            <div
+                class="chat-record-list-item"
+                v-for="item in messageRecord"
+                :key="item.messageId"
+                @mouseenter="Themouseover(item)"
+                @mouseleave="Themouseout(item)"
+            >
                 <div class="chat-record-list-item-left">
                     <el-image
                         :src="item.messageFrom === 'me' ? chatRecord.avatar : userLoginRegisterStore.getUserAvatar"
-                        alt=""
                     />
                 </div>
                 <div class="chat-record-list-item-right">
@@ -18,7 +25,14 @@
                     </div>
                     <div class="chat-record-list-item-right-bottom">
                         <p>
-                            {{ item.content }}
+                            <hover-edit
+                                :display="item.messageFrom !== 'me'"
+                                :mouseenter="mouseover"
+                                :mouseleave="mouseout"
+                                :item="item"
+                            >
+                                {{ item.content }}
+                            </hover-edit>
                         </p>
                     </div>
                 </div>
@@ -26,7 +40,7 @@
         </div>
         <!--发送消息框-->
         <div class="chat-search-box">
-            <input placeholder="消息@手动阀" v-model="searchValue" @clear="searchValue = ''" />
+            <input :placeholder="`消息@${chatRecord.name}`" v-model="searchValue" @clear="searchValue = ''" />
             <el-button type="primary" @click="search"
                 >发送
                 <el-icon>
@@ -38,12 +52,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, reactive } from 'vue';
+import HoverEdit from '@/components/common/HoverEdit.vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import router from '@/router';
 import { Promotion } from '@element-plus/icons-vue';
 import ChatService, { IChatRecordMessageResponse, IChatRecordResponse } from '@/api/chat';
 import { asyncTryCatch } from '@/utils/exceptionHandling';
 import { useUserLoginRegisterStore } from '@/store';
+import ChatHead from '@/views/Chat/components/common/ChatHead.vue';
 
 const searchValue = ref<string>('');
 // 聊天记录,空对象
@@ -54,11 +70,45 @@ const chatRecord = reactive<IChatRecordResponse>({
     name   : '',
     time   : ''
 });
-
 // 聊天消息
 const messageRecord = reactive<IChatRecordMessageResponse[]>([]);
 // 获取用户信息
 const userLoginRegisterStore = useUserLoginRegisterStore();
+// 鼠标移入状态
+const mouseover = ref<boolean>(false);
+// 鼠标移出状态
+const mouseout = ref<boolean>(true);
+/**
+ * 鼠标移入
+ * @param item 聊天记录
+ * @constructor 鼠标移入
+ * @return void
+ */
+const Themouseover = (item: IChatRecordMessageResponse) => {
+    item.isShow = true;
+    if (item.messageFrom !== 'me') {
+        mouseover.value = true;
+        return;
+    }
+    console.log('鼠标移入');
+    mouseover.value = false;
+};
+/**
+ * 鼠标移出
+ * @param item 聊天记录
+ * @constructor 鼠标移出
+ * @return void
+ */
+const Themouseout = (item: IChatRecordMessageResponse) => {
+    item.isShow = false;
+    if (item.messageFrom !== 'me') {
+        mouseover.value = false;
+        return;
+    }
+    console.log('鼠标移出');
+    mouseover.value = false;
+};
+
 // 请求用户信息
 onMounted(() => {
     userLoginRegisterStore.getUserInfo();
@@ -171,8 +221,11 @@ watch(
         justify-content: space-between;
         align-items: flex-start;
         padding: 10px 10px;
-        margin: 10px 0;
         border-top: 1.5px solid #3f4147;
+        //hover样式背景色为2E3035
+        &:hover {
+            background-color: #2e3035;
+        }
 
         .chat-record-list-item-left {
             width: 40px;

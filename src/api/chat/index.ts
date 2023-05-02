@@ -18,6 +18,8 @@ export interface IChatRecordMessageResponse {
     time: string;
     messageFrom: string;
     messageId: string;
+    isShow?: boolean;
+    isEdit?: boolean;
 }
 
 /**
@@ -54,7 +56,7 @@ class ChatService implements IChatApi {
      * @param id 聊天id
      * @returns {Promise<Response<{ data: IChatRecordResponse }>>}
      */
-    async getChatRecord(id: string): Promise<Response<{ data: IChatRecordResponse }>> {
+    public async getChatRecord(id: string): Promise<Response<{ data: IChatRecordResponse }>> {
         return await http.get(CHAT_RECORD + id);
     }
 }

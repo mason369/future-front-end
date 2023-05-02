@@ -1,7 +1,9 @@
 import http, { Response } from '@/utils/http';
 import { classAsyncTryCatch } from '@/utils/exceptionHandling';
 //查询当前登录用户信息
-export const USER_GET_CURRENT_USER = '/user/getCurrentUser';
+export const USER_GET_CURRENT_USER = '/userFriends/getCurrentUser';
+//根据当前好友id，查询共同加入的服务器数量
+export const USER_GET_SERVER_COUNT = '/userFriends/getCommonServerCount';
 
 /**
  *  查询当前登录用户信息响应结果接口定义
@@ -29,11 +31,53 @@ export interface IGetCurrentUserResponse {
 }
 
 /**
+ * 查询共同加入的服务器与好友数量响应结果接口定义
+ * @interface ICommonServerCountResponse
+ * @property {ICommonServerItem[]} commonServer 共同加入的服务器
+ * @property {ICommonFriendItem[]} commonFriend 共同好友
+ */
+export interface ICommonServerCountResponse {
+    commonServer: ICommonServerItem[];
+    commonFriend: ICommonFriendItem[];
+}
+
+/**
+ * 共同加入的服务器与好友数量响应结果接口定义
+ * @interface ICommonServerItem
+ * @property {string} id 服务器id
+ * @property {string} name 服务器名称
+ * @property {string} icon 服务器图标
+ */
+export interface ICommonServerItem {
+    id: string;
+    name: string;
+    icon: string;
+}
+
+/**
+ * 共同好友响应结果接口定义
+ * @interface ICommonFriendItem
+ * @property {string} id 好友id
+ * @property {string} name 好友名称
+ * @property {string} avatar 好友头像
+ */
+export interface ICommonFriendItem {
+    id: string;
+    name: string;
+    avatar: string;
+}
+
+/**
  *  用户api接口定义
  *  @interface IUserApi
  */
 export interface IUserApi {
     getCurrentUser: () => Promise<Response<{ data: IGetCurrentUserResponse }>>;
+    getCommonServerCount: (friendId: string) => Promise<
+        Response<{
+            data: ICommonServerCountResponse;
+        }>
+    >;
 }
 
 /**
@@ -50,6 +94,19 @@ class UserService implements IUserApi {
      */
     public async getCurrentUser(): Promise<Response<{ data: IGetCurrentUserResponse }>> {
         return await http.get(USER_GET_CURRENT_USER);
+    }
+
+    /**
+     * 根据当前好友id，查询共同加入的服务器数量
+     * @param {number} friendId 好友id
+     * @returns {Promise<Response<{ data:ICommonServerCountResponse }>>}
+     */
+    public async getCommonServerCount(friendId: string): Promise<
+        Response<{
+            data: ICommonServerCountResponse;
+        }>
+    > {
+        return await http.get(USER_GET_SERVER_COUNT, { friendId });
     }
 }
 
