@@ -12,6 +12,7 @@ import { viteMockServe } from 'vite-plugin-mock';
 import { VitePWA } from 'vite-plugin-pwa';
 import preload from 'vite-plugin-preload';
 import { terser } from 'rollup-plugin-terser';
+import { spaLoading } from 'vite-plugin-spa-loading';
 
 // 接口定义
 interface BaseConfigOptions {
@@ -100,7 +101,21 @@ function defineConfig({ command, mode }: BaseConfigOptions) {
                     ]
                 }
             }),
-            preload()
+            preload(),
+            spaLoading('img', {
+                debounce : 150,
+                src      : 'http://39.105.229.249/ftp/ling/future/loadingx.gif',
+                devEnable: true,
+                tipText  : 'Future Chatter,未来聊天,Is Time Now……',
+                css      : `
+                    .loading-container,.svg-loading{
+                        background-color: #333333 !important;
+                        color: #fff !important;
+                    }`,
+                error: {
+                    tip: 'Future Chatter,未来聊天,Is Time Now……'
+                }
+            })
         ],
         base: env.VITE_PUBLIC_PATH,
         css : {
